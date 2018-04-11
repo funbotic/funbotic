@@ -12,8 +12,6 @@
 
 /**
  * Create custom fields when uploading/editing media, to allow a piece of media to be associated with an individual camper.
- * 
- * Modified from: https://code.tutsplus.com/articles/how-to-add-custom-fields-to-attachments--wp-31100
  */
 
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.

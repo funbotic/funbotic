@@ -85,6 +85,11 @@ require_once dirname( __FILE__ ) . '/includes/funbotic-user-fields.php';
 require_once dirname( __FILE__ ) . '/includes/funbotic-media-fields.php';
 
 /**
+ * Generates shortcode for gallery populated dynamically with images tagged with the current Subscriber.
+ */
+require_once dirname( __FILE__ ) . '/includes/funbotic-dynamic-user-gallery.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,

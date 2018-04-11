@@ -28,7 +28,7 @@ function process_if_shortcode( $atts, $content ) {
 	$atts 			= normalize_empty_atts( $atts );
 	$result 		= false;
 
-	foreach( $atts as $condition => $val ) {
+	foreach ( $atts as $condition => $val ) {
 		$mustbe = !in_array( $val, $false_strings, true ); // strict, or else empty atts don't work as expected
 		$evaluate = apply_filters( "{$if_shortcode_filter_prefix}{$condition}", false );
 		$result |= $evaluate == $mustbe;
@@ -116,15 +116,15 @@ function if_shortcode_conditional_tags() {
 
 	global $if_shortcode_filter_prefix;
 
-	foreach($supported as $tag) {
+	foreach ($supported as $tag) {
 		add_filter( "{$if_shortcode_filter_prefix}{$tag}", $tag );
 	}
 }
 
 // normalize_empty_atts found here: http://wordpress.stackexchange.com/a/123073/39275
 function normalize_empty_atts( $atts ) {
-	foreach( $atts as $attribute => $value ) {
-		if( is_int( $attribute )) {
+	foreach ( $atts as $attribute => $value ) {
+		if ( is_int( $attribute ) ) {
 			$atts[strtolower( $value )] = true;
 			unset( $atts[$attribute] );
 		}

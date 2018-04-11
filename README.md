@@ -98,6 +98,10 @@ And the following conditions have been added as custom conditions:
 
 	is_user_role_subscriber - Checks if the currently logged in user has the role "Subscriber", from the LearnDash plugin.
 
+	is_user_role_group_leader - Checks if the currently logged in user has the role "Group Leader", from the LearnDash plugin.
+
+	is_user_role_customer - Checks if the currently logged in user has the role "Customer", from the WooCommerce plugin.
+
 For example, the evaluation of the is_page condition is equivalent to calling is_page() with no parameter.
 
 The functionality of the plugin can be extended by other plugins, by means of adding custom conditions through filters.  To add a custom condition, a filter hook must be defined in the following manner:
@@ -130,6 +134,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 # Changelog
+
+## 1.0.1
+- Data saving functionality for funbotic-media-fields.php fully implemented.
 
 ## 1.0
 - Initial menu functionality.
