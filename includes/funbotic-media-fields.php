@@ -54,13 +54,18 @@ function funbotic_load_campers_in_media( $field ) {
 	$id = get_the_ID();
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
-	$previously_associated_campers = funbotic_clean_array( get_post_meta( $id, 'campers_in_media' ) );
+	$previously_associated_campers = get_post_meta( $id, 'campers_in_media' );
+
 	// We need to make sure to save the campers who are associated with this field BEFORE any changes
 	// are made to it, otherwise we will not be able to accurately compare changes when updating values.
-	update_post_meta( $id, 'funbotic_previously_associated_campers', $previously_associated_campers );
+	if ( empty( $previously_associated_campers ) || is_null( $previously_associated_campers ) ) {
+		update_post_meta( $id, 'funbotic_previously_associated_campers', $previously_associated_campers );
+	} else {
+		$new_meta = funbotic_clean_array( $previously_associated_campers );
+		update_post_meta( $id, 'funbotic_previously_associated_campers', $new_meta );
+	}
 
 	return $field;
-
 }
 
 function funbotic_update_value_campers_in_media( $value, $field, $post_id ) {
@@ -68,17 +73,38 @@ function funbotic_update_value_campers_in_media( $value, $field, $post_id ) {
 	// Both the previous campers associated with this image as well as the current set of campers need
 	// to be loaded, so they can be compared with array_diff.
 	$id = get_the_ID();
-	$previously_associated_campers = funbotic_clean_array( get_post_meta( $id, 'funbotic_previously_associated_campers' ) );
-	$current_associated_campers = funbotic_clean_array( $value );
+	$current_post_meta = get_post_meta( $id, 'funbotic_previously_associated_campers' );
+	$previously_associated_campers = funbotic_clean_array( $current_post_meta ); // Clean up current_post_meta.
+	$current_associated_campers = $value;
+	$new_campers = array();
+	$campers_to_remove = array();
+
+	// If both $previously_associated campers and $current_associated_campers have no data/are null.
+	if ( ( empty( $previously_associated_campers ) || is_null( $previously_associated_campers ) ) && ( empty( $current_associated_campers ) || is_null( $current_associated_campers ) ) ) {
+		
+		return $value; // Nothing needs to happen and this function can return.
+
+	// If only $previously_associated_campers is null.
+	} elseif ( empty( $previously_associated_campers ) || is_null( $previously_associated_campers ) ) {
+		
+		$new_campers = funbotic_clean_array( $current_associated_campers ); // Then all the currently associated campers are new.
+
+	// If only $current_associated_campers is null.
+	} elseif ( empty( $current_associated_campers ) || is_null( $current_associated_campers ) ) {
+
+		$campers_to_remove = funbotic_clean_array( $previously_associated_campers ); // Then all previously associated campers need to be removed.
+
+	// If both arrays have values in them.
+	} else {
+
+		$new_campers = funbotic_clean_array( array_diff( $current_associated_campers, $previously_associated_campers ) );
+		$campers_to_remove = funbotic_clean_array( array_diff( $previously_associated_campers, $current_associated_campers ) );
+
+	}
 	
 	// Test
 	update_post_meta( 4406, 'test_previous_campers', $previously_associated_campers );
-	update_post_meta( 4406, 'test_current_campers', $value );
-
-	$new_campers = funbotic_clean_array( array_diff( $current_associated_campers, $previously_associated_campers ) );
-	$campers_to_remove = funbotic_clean_array( array_diff( $previously_associated_campers, $current_associated_campers ) );
-
-	// Test
+	update_post_meta( 4406, 'test_current_campers', $current_associated_campers );
 	update_post_meta( 4406, 'test_new_campers', $new_campers );
 	update_post_meta( 4406, 'test_campers_to_remove', $campers_to_remove );
 
@@ -86,19 +112,26 @@ function funbotic_update_value_campers_in_media( $value, $field, $post_id ) {
 	foreach( $new_campers as $new_camper ) {
 		$current_associated_images = funbotic_clean_array( get_user_meta( $new_camper, 'funbotic_associated_images' ) );
 		// If the ID is already in the array, do nothing.  This is a double-check, thanks to array_diff.
-		if ( in_array( $new_camper, $current_associated_images ) ) {
+		if ( in_array( $id, $current_associated_images ) ) {
 			// Do nothing!
 		} else {
-			array_push( $current_associated_images, $new_camper );
+			array_push( $current_associated_images, $id );
 		} // End if/else.
-		update_user_meta( $new_camper, 'funbotic_current_associated_images', $current_associated_images );
+		update_user_meta( $new_camper, 'funbotic_associated_images', $current_associated_images );
 	}
 
 	// Process each camper to be removed.  Remove the ID of this image from their user_meta.
 	foreach( $campers_to_remove as $camper ) {
-		$current_associated_images = funbotic_clean_array( get_user_meta( $camper, 'funbotic_associated_images' ) );
-		$new_meta = funbotic_clean_array( array_diff( $current_associated_images, $camper ) );
-		update_user_meta( $camper, 'funbotic_associated_images', $new_meta );
+		$current_associated_images = get_user_meta( $camper, 'funbotic_associated_images' );
+		if ( empty( $current_associated_images ) || is_null( $current_associated_images ) ) {
+			update_user_meta( $camper, 'funbotic_associated_images', $id );
+		} else {
+			$cleaned_images = funbotic_clean_array( $current_associated_images );
+			$id_array = array(); // array_diff function requires 2 arrays as parameters.
+			array_push( $id_array, $id );
+			$new_meta = funbotic_clean_array( array_diff( $cleaned_images, $id_array ) );
+			update_user_meta( $camper, 'funbotic_associated_images', $new_meta );
+		}
 	}
 
 	// Make sure that we save the currently associated campers as the now "previous" set of campers,
