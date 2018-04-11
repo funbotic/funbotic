@@ -16,9 +16,6 @@
  * Modified from: https://code.tutsplus.com/articles/how-to-add-custom-fields-to-attachments--wp-31100
  */
 
-//add_filter( 'attachment_fields_to_edit', 'funbotic_apply_media_fields_filter', 11, 2 );
-//add_filter( 'attachment_fields_to_save', 'funbotic_save_media_fields', 11, 2 );
-
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
