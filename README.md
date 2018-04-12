@@ -16,22 +16,30 @@ License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 # Description
-This is a custom plugin for WordPress, providing a variety of functionality for the Funbotic website.
+This is a custom plugin for WordPress, providing a variety of features for the Funbotic website.
 
-Current functionality:
+Current features:
+- Dynamic User Gallery
 - Logged In/Logged Out Menu Change
 - Conditional Shortcodes
 
 See each section below for a description of the functionality provided by different elements of this plugin.
 
-## Functionality: Logged In/Logged Out Menu Change
+## Dynamic User Gallery
+Displays any images associated with a given user with the Subscriber role to that user, via the following shortcode:
+	[funbotic_user_gallery]
+In order to associate an image with a Subscriber, open that image in the WordPress Media Library.  Beneath the image you should see checkboxes of all users with the Subscriber role.  Check whichever users are present in the image, and it will show up as part of the dynamic user gallery, whenever the shortcode is used.
+
+This feature requires the use of Advanced Custom Fields, within which there must be a checkbox field with the Field Name "campers-in-media" (without quotes).  Ensure the field has a good description, but is NOT set as a required field.  Currently, for the Field Group rules, select "Show this field group if Attachment is equal to All".  Future updates will hopefully provide functionality to ensure that the checkboxes only show up posts that have an image as an attachment.
+
+## Logged In/Logged Out Menu Change
 All credit to: http://www.wpbeginner.com/wp-themes/how-to-show-different-menus-to-logged-in-users-in-wordpress/
 
 This allows one menu to be displayed to users who are logged into the site, and another to be displayed to users who are logged out of the site.  The menus must have the following names:
 - logged-in
 - logged-out
 
-## Functionality: Conditional Shortcodes
+## Conditional Shortcodes
 Originally developed by geomagas.  https://wordpress.org/plugins/if-shortcode/
 
 This plugin provides an "if" shortcode to conditionally render content. The syntax is the following:
@@ -96,7 +104,7 @@ A multitude of conditions are supported out-of-the-box.  The following evaluate 
 
 And the following conditions have been added as custom conditions:
 
-	is_user_role_subscriber - Checks if the currently logged in user has the role "Subscriber", from the LearnDash plugin.
+	is_user_role_subscriber - Checks if the currently logged in user has the role "Subscriber".
 
 	is_user_role_group_leader - Checks if the currently logged in user has the role "Group Leader", from the LearnDash plugin.
 
@@ -115,6 +123,48 @@ The functionality of the plugin can be extended by other plugins, by means of ad
 	
 A big thanks to M Miller for the `normalize_empty_atts()` function found here: http://wordpress.stackexchange.com/a/123073/39275
 
+# LearnDash Functions
+Unfortunately, the documentation for a developer API for LearnDash is extremely spotty at best.  This section is an attempt to provide partial documentation for all functions able to be wrangled from its source files.
+
+	* Description: 
+		* Get the ID of users enrolled in the course with a specific ID.
+	* Usage:
+		* learndash_get_users_for_course( $course_id )
+	* Parameters:
+		* $course_id
+			* (integer) (required?) The ID of the course to pull user enrollment data from.
+	* Return Values:
+		* Array(?) of users/user IDs?
+	
+	* Description:
+		* Get user IDs that belong to a group with a specific ID.
+	* Usage:
+		* learndash_get_groups_user_ids( $group_id )
+	* Parameters:
+		* $group_id
+			* (integer) (required?) The ID of the group to pull user IDs from.
+	* Return Values:
+		* Array(?) of user IDs.
+
+	* Description:
+		* Get the ID of the courses for which the user with the specified ID is credited.
+	* Usage:
+		* ld_get_mycourses( $user_id )
+	* Parameters:
+		* $user_id
+			* (integer) (required?) The ID of the user to pull courses data for.
+	* Return Values:
+		* Array(?) of course IDs.
+
+	* Description:
+		* Get group IDs that include a user with a specific ID.
+	* Usage:
+		* learndash_get_users_group_ids( $user_id )
+	* Parameters:
+		* $user_id
+			* (integer) (required?) The user ID to check for in all groups.
+	* Return Values:
+		* Array(?) of group IDs the user is included in.
 
 # Installation
 
@@ -134,6 +184,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 # Changelog
+
+## 1.1.0
+- Dynamic user gallery fully implemented.
 
 ## 1.0.1
 - Data saving functionality for funbotic-media-fields.php fully implemented.
