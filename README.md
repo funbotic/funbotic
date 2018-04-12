@@ -137,7 +137,8 @@ learndash_get_users_for_course( $course_id )
 	* (integer) (required?) The ID of the course to pull user enrollment data from.
 ###### Return Values:
 Array(?) of users/user IDs?
-	
+
+
 ###### Description:
 Get user IDs that belong to a group with a specific ID.
 ###### Usage:
@@ -148,6 +149,7 @@ learndash_get_groups_user_ids( $group_id )
 ###### Return Values:
 Array(?) of user IDs.
 
+
 ###### Description:
 Get the ID of the courses for which the user with the specified ID is credited.
 ###### Usage:
@@ -157,6 +159,7 @@ ld_get_mycourses( $user_id )
 	* (integer) (required?) The ID of the user to pull courses data for.
 ###### Return Values:
 Array(?) of course IDs.
+
 
 ###### Description:
 Get group IDs that include a user with a specific ID.
