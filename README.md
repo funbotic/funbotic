@@ -5,11 +5,11 @@ Link: https://www.funbotic.com
 
 Tags: proprietary
 
-Requires at least: 3.0.1
+Requires at least: 4.0.1
 
-Tested up to: 3.4
+Tested up to: 4.9.5
 
-Stable tag: 4.3
+Stable tag: 4.9.5
 
 License: GPLv2 or later
 
