@@ -128,45 +128,45 @@ A big thanks to M Miller for the `normalize_empty_atts()` function found here: h
 # LearnDash Functions
 Unfortunately, the documentation for a developer API for LearnDash is extremely spotty at best.  This section is an attempt to provide partial documentation for all functions able to be wrangled from its source files.
 
-	* Description: 
-		* Get the ID of users enrolled in the course with a specific ID.
-	* Usage:
-		* learndash_get_users_for_course( $course_id )
-	* Parameters:
-		* $course_id
-			* (integer) (required?) The ID of the course to pull user enrollment data from.
-	* Return Values:
-		* Array(?) of users/user IDs?
+###### Description: 
+Get the ID of users enrolled in the course with a specific ID.
+###### Usage:
+learndash_get_users_for_course( $course_id )
+###### Parameters:
+* $course_id
+	* (integer) (required?) The ID of the course to pull user enrollment data from.
+###### Return Values:
+Array(?) of users/user IDs?
 	
-	* Description:
-		* Get user IDs that belong to a group with a specific ID.
-	* Usage:
-		* learndash_get_groups_user_ids( $group_id )
-	* Parameters:
-		* $group_id
-			* (integer) (required?) The ID of the group to pull user IDs from.
-	* Return Values:
-		* Array(?) of user IDs.
+###### Description:
+Get user IDs that belong to a group with a specific ID.
+###### Usage:
+learndash_get_groups_user_ids( $group_id )
+###### Parameters:
+* $group_id
+	* (integer) (required?) The ID of the group to pull user IDs from.
+###### Return Values:
+Array(?) of user IDs.
 
-	* Description:
-		* Get the ID of the courses for which the user with the specified ID is credited.
-	* Usage:
-		* ld_get_mycourses( $user_id )
-	* Parameters:
-		* $user_id
-			* (integer) (required?) The ID of the user to pull courses data for.
-	* Return Values:
-		* Array(?) of course IDs.
+###### Description:
+Get the ID of the courses for which the user with the specified ID is credited.
+###### Usage:
+ld_get_mycourses( $user_id )
+###### Parameters:
+* $user_id
+	* (integer) (required?) The ID of the user to pull courses data for.
+###### Return Values:
+Array(?) of course IDs.
 
-	* Description:
-		* Get group IDs that include a user with a specific ID.
-	* Usage:
-		* learndash_get_users_group_ids( $user_id )
-	* Parameters:
-		* $user_id
-			* (integer) (required?) The user ID to check for in all groups.
-	* Return Values:
-		* Array(?) of group IDs the user is included in.
+###### Description:
+Get group IDs that include a user with a specific ID.
+###### Usage:
+learndash_get_users_group_ids( $user_id )
+###### Parameters:
+* $user_id
+	* (integer) (required?) The user ID to check for in all groups.
+###### Return Values:
+Array(?) of group IDs the user is included in.
 
 # Installation
 
