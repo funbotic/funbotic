@@ -32,7 +32,7 @@ Displays any images associated with a given user with the Subscriber role to tha
 
 In order to associate an image with a Subscriber, open that image in the WordPress Media Library.  Beneath the image you should see checkboxes of all users with the Subscriber role.  Check whichever users are present in the image, and it will show up as part of the dynamic user gallery, whenever the shortcode is used.
 
-This feature requires the use of Advanced Custom Fields, within which there must be a checkbox field with the Field Name "campers-in-media" (without quotes).  Ensure the field has a good description, but is NOT set as a required field.  Currently, for the Field Group rules, select "Show this field group if Attachment is equal to All".  Future updates will hopefully provide functionality to ensure that the checkboxes only show up posts that have an image as an attachment.
+This feature requires the use of Advanced Custom Fields, within which there must be a checkbox field with the Field Name "campers-in-media" (without quotes).  Ensure the field has a good description, but is NOT set as a required field.  Currently, for the Field Group rules, select "Show this field group if Attachment is equal to All".  Future updates will hopefully provide functionality to ensure that the checkboxes only show up for posts that have an image as an attachment.
 
 ## Logged In/Logged Out Menu Change
 All credit to: http://www.wpbeginner.com/wp-themes/how-to-show-different-menus-to-logged-in-users-in-wordpress/
