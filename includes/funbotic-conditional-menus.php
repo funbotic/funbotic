@@ -21,7 +21,7 @@ function funbotic_wp_nav_menu_args( $args = '' ) {
 	} else { 
 		$args['menu'] = 'logged-out';
 	} 
-		return $args;
+	return $args;
 }
 
 add_filter( 'wp_nav_menu_args', 'funbotic_wp_nav_menu_args' );

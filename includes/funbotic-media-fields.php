@@ -14,10 +14,24 @@
  * Create custom fields when uploading/editing media, to allow a piece of media to be associated with an individual camper.
  */
 
+// Filter to ensure field is only loaded if the attachment of the current post is an image.
+add_filter('acf/prepare_field', 'funbotic_acf_prepare_field');
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=campers_in_media', 'funbotic_update_value_campers_in_media', 10, 3 );
+
+
+function funbotic_acf_prepare_field( $field ) {
+	$id = get_the_ID();
+
+	if ( wp_attachment_is_image( $id ) ) {
+		return $field;
+	} else {
+		$field['disabled'] = 1;
+		return $field;
+	}
+}
 
 
 function funbotic_load_campers_in_media( $field ) {
@@ -38,7 +52,6 @@ function funbotic_load_campers_in_media( $field ) {
 		$camper_display_name = $camper->display_name;
 		$field['choices'][$camper_ID] = $camper_display_name;
 	}
-
 	/*
 	// Dump variable for debugging.
 	echo '<pre>';
@@ -50,9 +63,9 @@ function funbotic_load_campers_in_media( $field ) {
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
 	$previously_associated_campers = get_post_meta( $id, 'campers_in_media' );
-
 	// We need to make sure to save the campers who are associated with this field BEFORE any changes
 	// are made to it, otherwise we will not be able to accurately compare changes when updating values.
+
 	if ( empty( $previously_associated_campers ) || is_null( $previously_associated_campers ) ) {
 		update_post_meta( $id, 'funbotic_previously_associated_campers', $previously_associated_campers );
 	} else {
