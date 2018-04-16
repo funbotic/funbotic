@@ -15,21 +15,37 @@
  */
 
 // Filter to ensure field is only loaded if the attachment of the current post is an image.
-add_filter('acf/prepare_field', 'funbotic_acf_prepare_field');
+add_filter('acf/load_field/name=campers_in_media', 'funbotic_acf_load_campers_in_media_field');
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=campers_in_media', 'funbotic_update_value_campers_in_media', 10, 3 );
+// Add capability to upload and edit media files to the Group Leader role, as this will be necessary for
+// group leaders to do their own photo tagging of campers.
+add_action( 'init', 'funbotic_add_group_leader_media_permissions');
 
 
-function funbotic_acf_prepare_field( $field ) {
+function funbotic_add_group_leader_media_permissions() {
+	// Use of static variable to ensure function only runs once.
+	static $has_run = false;
+
+	if ( $has_run === true ) {
+		// Do nothing.
+	} else {
+		$role = get_role( 'group_leader' );
+		$role->add_cap( 'upload_files' );
+		$has_run = true;
+	}
+}
+
+
+function funbotic_acf_load_campers_in_media_field( $field ) {
 	$id = get_the_ID();
 
 	if ( wp_attachment_is_image( $id ) ) {
 		return $field;
 	} else {
 		$field['disabled'] = 1;
-		return $field;
 	}
 }
 

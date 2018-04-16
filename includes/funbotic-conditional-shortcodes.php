@@ -165,7 +165,19 @@ function is_user_role_customer() {
 	}
 }
 
+// Conditional evalulator to determine if the user has the role of Administrator.
+// Parameter to use in shortcode is: is_user_role_administrator
+function is_user_role_administrator() {
+	$currentUserID = get_current_user_id();
+	if ( user_can( $currentUserID, 'administrator' ) ) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 // Add all filters for conditional evalulators.
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_subscriber', 'is_user_role_subscriber' );
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_group_leader', 'is_user_role_group_leader' );
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_customer', 'is_user_role_customer' );
+add_filter( $if_shortcode_filter_prefix . 'is_user_role_administrator', 'is_user_role_administrator' );
