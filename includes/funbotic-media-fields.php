@@ -14,15 +14,17 @@
  * Create custom fields when uploading/editing media, to allow a piece of media to be associated with an individual camper.
  */
 
-// Filter to ensure field is only loaded if the attachment of the current post is an image.
-add_filter('acf/load_field/name=campers_in_media', 'funbotic_acf_load_campers_in_media_field');
+// Add capability to upload and edit media files to the Group Leader role, as this will be necessary for
+// group leaders to do their own photo tagging of campers.
+add_action( 'init', 'funbotic_add_group_leader_media_permissions');
+// Filter to add custom rule to value to allow a field to only show up when the attachment to a post is an image.
+add_filter( 'acf/location/rule_values/ef_media', 'acf_location_rule_values_ef_media' );
+// Rule match for funbotic_acf_rule_values_attachment_image.
+add_filter( 'acf/location/rule_match/ef_media', 'acf_location_rule_match_ef_media', 10, 3 );
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=campers_in_media', 'funbotic_update_value_campers_in_media', 10, 3 );
-// Add capability to upload and edit media files to the Group Leader role, as this will be necessary for
-// group leaders to do their own photo tagging of campers.
-add_action( 'init', 'funbotic_add_group_leader_media_permissions');
 
 
 function funbotic_add_group_leader_media_permissions() {
@@ -39,14 +41,35 @@ function funbotic_add_group_leader_media_permissions() {
 }
 
 
-function funbotic_acf_load_campers_in_media_field( $field ) {
-	$id = get_the_ID();
+function acf_location_rule_values_ef_media ( $choices ) {
+	$choices['image'] = 'Image';
 
-	if ( wp_attachment_is_image( $id ) ) {
-		return $field;
+	return $choices;
+}
+
+
+// Apparently this is impossible?
+// https://support.advancedcustomfields.com/forums/topic/custom-location-rules-for-attachment-modals/
+// Seriously what the fuck ACF.
+function acf_location_rule_match_ef_media ( $match, $rule, $options ) {
+	$id = get_the_ID();
+	
+	if ( $rule['param'] = 'post_type' && $rule['value'] = 'attachment' ) {
+		if( $rule['operator'] === "==" ) {
+
+			$match = wp_attachment_is_image( $id );
+
+    	} elseif ( $rule['operator'] === "!=" ) {
+
+			$match = !wp_attachment_is_image( $id );
+
+		}
 	} else {
-		$field['disabled'] = 1;
+		
+		$match = false;
 	}
+
+	return $match;
 }
 
 
