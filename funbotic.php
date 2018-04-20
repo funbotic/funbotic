@@ -75,11 +75,6 @@ require_once dirname( __FILE__ ) . '/includes/funbotic-conditional-menus.php';
 require_once dirname( __FILE__ ) . '/includes/funbotic-conditional-shortcodes.php';
 
 /**
- * Provides custom fields during registration and for internal use.
- */
-require_once dirname( __FILE__ ) . '/includes/funbotic-user-fields.php';
-
-/**
  * Provides custom fields to be used when uploading media, focused on making a per-user gallery possible.
  */
 require_once dirname( __FILE__ ) . '/includes/funbotic-media-fields.php';
