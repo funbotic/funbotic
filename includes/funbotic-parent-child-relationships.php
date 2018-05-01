@@ -24,6 +24,15 @@ add_filter( 'acf/load_field/name=funbotic_children', 'funbotic_load_children' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=funbotic_children', 'funbotic_update_value_funbotic_children', 10, 3 );
 
+add_action( 'personal_options_update', 'funbotic_load_children_prepare', 10, 1 );
+add_action( 'edit_user_profile_update', 'funbotic_load_children_prepare', 10, 1 );
+
+
+// Super janky function to save meta value for ID of profile being currently edited.  I'm so sorry.  Couldn't figure out another way to do this.
+function funbotic_load_children_prepare( $profileuser ) {
+	update_user_meta( get_current_user_id(), 'funbotic_user_being_edited', $profileuser->ID );
+}
+
 
 // Same idea as funbotic_load_campers_in_media, from funbotic-media-fields.php.
 function funbotic_load_parents( $field ) {
@@ -45,7 +54,7 @@ function funbotic_load_parents( $field ) {
 		$field['choices'][$parent_ID] = $parent_display_name;
 	}
 
-	$user_id = (int) $user_id;
+	$user_id = get_user_meta( get_current_user_id(), 'funbotic_user_being_edited' );
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
 	$previously_associated_parents = get_user_meta( $user_id, 'funbotic_parents' );
@@ -68,7 +77,7 @@ function funbotic_update_value_funbotic_parents( $value, $field, $post_id ) {
 
 	// Both the previous parents associated with this image as well as the current set of parents need
 	// to be loaded, so they can be compared with array_diff.
-	$user_id = (int) $user_id;
+	$user_id = get_user_meta( get_current_user_id(), 'funbotic_user_being_edited' );
 	$current_user_meta = get_user_meta( $user_id, 'funbotic_previously_associated_parents' );
 	$previously_associated_parents = funbotic_clean_array( $current_user_meta ); // Clean up current_user_meta.
 	$current_associated_parents = $value;
@@ -152,7 +161,7 @@ function funbotic_load_children( $field ) {
 		$field['choices'][$child_ID] = $child_display_name;
 	}
 
-	$user_id = (int) sanitize_text_field( $_GET['user_id'] );
+	$user_id = (int) get_user_meta( get_current_user_id(), 'funbotic_user_being_edited', true );
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
 	$previously_associated_children = get_user_meta( $user_id, 'funbotic_children' );
@@ -166,6 +175,13 @@ function funbotic_load_children( $field ) {
 		update_user_meta( $user_id, 'funbotic_previously_associated_children', $new_meta );
 	}
 
+	// Dump variable for debugging.
+	$current_post = get_post();
+	echo '<pre>';
+		echo 'Vardump: ';
+		var_dump( $user_id );
+	echo '</pre>';
+
 	return $field;
 }
 
@@ -174,13 +190,17 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 
 	// Both the previous children associated with this user as well as the current set of children need
 	// to be loaded, so they can be compared with array_diff.
-	$user_id = (int) sanitize_text_field( $_GET['user_id'] );
+	$user_id = (int) get_user_meta( get_current_user_id(), 'funbotic_user_being_edited', true );
+
+	echo '<pre>';
+		echo 'Update Value Vardump: ';
+		var_dump( $user_id );
+	echo '</pre>';
+
 	$raw_meta = get_user_meta( $user_id, 'funbotic_previously_associated_children' );
 	$current_associated_children = $value;
 	$new_children = array();
 	$children_to_remove = array();
-
-	$test_id = get_the_ID();
 
 	if ( empty( $raw_meta ) || is_null( $raw_meta ) ) {
 		$previously_associated_children = array();
@@ -212,8 +232,7 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 	}
 
 	// Test
-	update_user_meta( 116, 'test_user_id', $user_id );
-	update_user_meta( 116, 'test_experimental_id', $test_id );
+	update_user_meta( 116, 'test_id', $user_id );
 	update_user_meta( 116, 'test_current_associated_children', $current_associated_children );
 	update_user_meta( 116, 'test_new_children', $new_children );
 	update_user_meta( 116, 'test_children_to_remove', $children_to_remove );
