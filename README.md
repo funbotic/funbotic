@@ -190,9 +190,6 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
-## 1.1.1
-- Dynamic user gallery checkboxes only show up for images, and not other MIME types.
-
 ## 1.1.0
 - Dynamic user gallery fully implemented.
 
