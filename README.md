@@ -190,6 +190,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
+## 1.1.1
+- Logging out now redirects the user to the home page.
+
 ## 1.1.0
 - Dynamic user gallery fully implemented.
 

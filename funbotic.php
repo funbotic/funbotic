@@ -85,6 +85,11 @@ require_once dirname( __FILE__ ) . '/includes/funbotic-media-fields.php';
 require_once dirname( __FILE__ ) . '/includes/funbotic-dynamic-user-gallery.php';
 
 /**
+ * Redirects the user to the home page when logging out.
+ */
+require_once dirname( __FILE__ ) . '/includes/funbotic-redirect.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
