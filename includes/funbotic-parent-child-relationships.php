@@ -14,6 +14,9 @@
  * Creates relationships between user accounts to denote parent/child relationships, giving the ability for parents to monitor their children's progress.
  */
 
+// 
+add_filter( 'query_vars', 'funbotic_user_id_query_vars_filter' );
+
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of potential parent names.
 add_filter( 'acf/load_field/name=funbotic_parents', 'funbotic_load_parents' );
 
@@ -21,6 +24,12 @@ add_filter( 'acf/load_field/name=funbotic_parents', 'funbotic_load_parents' );
 add_filter( 'acf/load_field/name=funbotic_children', 'funbotic_load_children' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=funbotic_children', 'funbotic_update_value_funbotic_children', 10, 3 );
+
+
+function funbotic_user_id_query_vars_filter( $vars ) {
+	$vars[] = "user_id";
+  	return $vars;
+}
 
 
 // Same idea as funbotic_load_campers_in_media, from funbotic-media-fields.php.
@@ -43,19 +52,23 @@ function funbotic_load_parents( $field ) {
 		$field['choices'][$parent_ID] = $parent_display_name;
 	}
 
-	$user_id = (int) $user_id;
+	$query = get_query_var( 'user_id', '-1' );
+	$current_user_id = $query;
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
-	$previously_associated_parents = get_user_meta( $user_id, 'funbotic_parents' );
+	$previously_associated_parents = get_user_meta( $current_user_id, 'funbotic_parents' );
 	// We need to make sure to save the parents who are associated with this user BEFORE any changes
 	// are made to it, otherwise we will not be able to accurately compare changes when updating values.
 
 	if ( empty( $previously_associated_parents ) || is_null( $previously_associated_parents ) ) {
-		update_user_meta( $user_id, 'funbotic_previously_associated_parents', $previously_associated_parents );
+		update_user_meta( $current_user_id, 'funbotic_previously_associated_parents', $previously_associated_parents );
 	} else {
 		$new_meta = funbotic_clean_array( $previously_associated_parents );
-		update_user_meta( $user_id, 'funbotic_previously_associated_parents', $new_meta );
+		update_user_meta( $current_user_id, 'funbotic_previously_associated_parents', $new_meta );
 	}
+
+	// TEST
+	var_dump( $current_user_id );
 
 	return $field;
 
