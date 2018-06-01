@@ -190,6 +190,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
+## 1.1.2
+- Logging in from /wp-admin now redirects the user to the Profile page, for a more seamless experience.
+
 ## 1.1.1
 - Logging out now redirects the user to the home page.
 
