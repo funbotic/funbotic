@@ -92,7 +92,7 @@ function funbotic_load_children( $field ) {
 		$field['choices'][$child_ID] = $child_display_name;
 	}
 
-	$user_id = (int) $user_id;
+	$user_id = (int) get_field( 'profile_user_id' );
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
 	$previously_associated_children = get_user_meta( $user_id, 'funbotic_children' );
@@ -112,9 +112,9 @@ function funbotic_load_children( $field ) {
 
 function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 
-	// Both the previous children associated with this image as well as the current set of children need
+	// Both the previous children associated with this profile as well as the current set of children need
 	// to be loaded, so they can be compared with array_diff.
-	$user_id = (int) $user_id;
+	$user_id = (int) get_field( 'profile_user_id' );
 	$current_user_meta = get_user_meta( $user_id, 'funbotic_previously_associated_children' );
 	$previously_associated_children = funbotic_clean_array( $current_user_meta ); // Clean up current_user_meta.
 	$current_associated_children = $value;
