@@ -16,18 +16,19 @@
 
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of potential parent names.
 add_filter( 'acf/load_field/name=funbotic_parents', 'funbotic_load_parents' );
-
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of potential child names.
 add_filter( 'acf/load_field/name=funbotic_children', 'funbotic_load_children' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=funbotic_children', 'funbotic_update_value_funbotic_children', 10, 3 );
-
+// Needed to save user profile ID being edited.
 add_action( 'edit_user_profile', 'funbotic_save_profile_ID', 10, 1 );
 
 
+// This function executes at high priority, so it can save the ID of the user profile currently being edited before funbotic_load_parents() fires.
 function funbotic_save_profile_ID( $profileuser ) {
 	update_field( 'profile_user_id', $profileuser->ID );
 }
+
 
 // Same idea as funbotic_load_campers_in_media, from funbotic-media-fields.php.
 function funbotic_load_parents( $field ) {
