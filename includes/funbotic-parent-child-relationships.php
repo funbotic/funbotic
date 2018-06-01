@@ -22,6 +22,12 @@ add_filter( 'acf/load_field/name=funbotic_children', 'funbotic_load_children' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=funbotic_children', 'funbotic_update_value_funbotic_children', 10, 3 );
 
+add_action( 'edit_user_profile', 'funbotic_save_profile_ID', 10, 1 );
+
+
+function funbotic_save_profile_ID( $profileuser ) {
+	update_field( 'profile_user_id', $profileuser->ID );
+}
 
 // Same idea as funbotic_load_campers_in_media, from funbotic-media-fields.php.
 function funbotic_load_parents( $field ) {
@@ -43,7 +49,7 @@ function funbotic_load_parents( $field ) {
 		$field['choices'][$parent_ID] = $parent_display_name;
 	}
 
-	$user_id = (int) $user_id;
+	$user_id = (int) get_field( 'profile_user_id' );
 	// This appears to be the only way to properly get the values from the field, as
 	// dynamically generated checkboxes don't have a 'values' array, merely a 'choices' array at this stage.
 	$previously_associated_parents = get_user_meta( $user_id, 'funbotic_parents' );
@@ -56,6 +62,9 @@ function funbotic_load_parents( $field ) {
 		$new_meta = funbotic_clean_array( $previously_associated_parents );
 		update_user_meta( $user_id, 'funbotic_previously_associated_parents', $new_meta );
 	}
+
+	//TEST
+	var_dump( $user_id );
 
 	return $field;
 
