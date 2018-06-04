@@ -30,7 +30,8 @@ function funbotic_save_profile_ID( $profileuser ) {
 }
 
 
-// Same idea as funbotic_load_campers_in_media, from funbotic-media-fields.php.
+// A camper's parents will be displayed as an uneditable text field.  Any parent/child relationships should
+// only be established when editing the parent's profile.
 function funbotic_load_parents( $field ) {
 
 	$args = array(
@@ -66,6 +67,9 @@ function funbotic_load_parents( $field ) {
 
 	//TEST
 	var_dump( $user_id );
+
+	// Hopefully this will make the field uneditable?
+	$field['disabled'] = 1;
 
 	return $field;
 
