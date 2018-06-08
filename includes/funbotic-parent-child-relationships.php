@@ -33,11 +33,7 @@ function funbotic_save_profile_ID( $profileuser ) {
 // A camper's parents will be displayed as an uneditable text field.  Any parent/child relationships should
 // only be established when editing the parent's profile.
 function funbotic_load_parents( $field ) {
-	// Hopefully this will make the field uneditable?
 	$field['readonly'] = 1;
-
-	var_dump( $field );
-
 	return $field;
 }
 
@@ -75,9 +71,6 @@ function funbotic_load_children( $field ) {
 		$new_meta = funbotic_clean_array( $previously_associated_children );
 		update_user_meta( $user_id, 'funbotic_previously_associated_children', $new_meta );
 	}
-
-	//TEST
-	var_dump( $user_id );
 
 	return $field;
 }
@@ -117,29 +110,42 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 
 	}
 
+	// NOTE: funbotic_associated_parents only exists as a custom user_meta field.  It does not and should not exist as an ACF field.
+	// funbotic_associated_parents should merely be an internal listing of the IDs of all users who have a parent relationship to a given camper's user profile.
+
 	// Process each new child.  Add the ID of this parent to their user_meta.
 	foreach( $new_children as $new_child ) {
-		$current_associated_parents = funbotic_clean_array( get_user_meta( $new_child, 'funbotic_associated_parents' ) );
+		$user_meta = get_user_meta( $new_child, 'funbotic_associated_parents' );
+
+		if ( empty( $user_meta ) || is_null( $user_meta ) ) {
+			$current_associated_parents = $user_meta;
+		} else {
+			$current_associated_parents = funbotic_clean_array( $user_meta );
+		}
+
 		// If the ID is already in the array, do nothing.  This is a double-check, thanks to array_diff.
 		if ( in_array( $user_id, $current_associated_parents ) ) {
 			// Do nothing!
 		} else {
 			array_push( $current_associated_parents, $user_id );
+			update_user_meta( $new_child, 'funbotic_associated_parents', $current_associated_parents );
+			funbotic_generate_acf_parent_textarea( $new_child );
 		} // End if/else.
-		update_user_meta( $new_child, 'funbotic_associated_parents', $current_associated_parents );
 	}
 
-	// Process each child to be removed.  Remove the ID of this image from their user_meta.
+	// Process each child to be removed.  Remove the ID of this user from their user_meta.
 	foreach( $children_to_remove as $child ) {
-		$current_associated_children = get_user_meta( $child, 'funbotic_associated_children' );
-		if ( empty( $current_associated_children ) || is_null( $current_associated_children ) ) {
-			update_user_meta( $child, 'funbotic_associated_children', $user_id );
+		$current_associated_parents = get_user_meta( $child, 'funbotic_associated_parents' );
+		if ( empty( $current_associated_parents ) || is_null( $current_associated_parents ) ) {
+			// Nothing else needs to be done besides regenerate the textarea.
+			funbotic_generate_acf_parent_textarea( $child );
 		} else {
-			$cleaned_array = funbotic_clean_array( $current_associated_children );
+			$cleaned_array = funbotic_clean_array( $current_associated_parents );
 			$id_array = array(); // array_diff function requires 2 arrays as parameters.
 			array_push( $id_array, $user_id );
 			$new_meta = funbotic_clean_array( array_diff( $cleaned_array, $id_array ) );
-			update_user_meta( $child, 'funbotic_associated_children', $new_meta );
+			update_user_meta( $child, 'funbotic_associated_parents', $new_meta );
+			funbotic_generate_acf_parent_textarea( $child );
 		}
 	}
 
@@ -148,4 +154,22 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 	update_user_meta( $user_id, 'funbotic_previously_associated_children', $current_associated_children );
 
 	return $value;
+}
+
+
+// This is a helper function that generates a formatted text string displaying all of the users who are registered as parents
+// of the profile whose ID is entered as a parameter.  The text string is saved in the user's funbotic_parents ACF field metadata.
+function funbotic_generate_acf_parent_textarea( $user_id_in ) {
+	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents', false );
+
+	$textarea_string = '';
+
+	foreach ( $parent_IDs as $parent ) {
+		$last_name = get_user_meta( $parent, 'last_name' );
+		$first_name = get_user_meta( $parent, 'first_name' );
+
+		$textarea_string .= $last_name . ', ' . $first_name;
+	}
+
+	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
