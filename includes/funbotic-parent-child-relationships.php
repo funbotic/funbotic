@@ -82,10 +82,15 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 	// to be loaded, so they can be compared with array_diff.
 	$user_id = (int) get_field( 'profile_user_id' );
 	$current_user_meta = get_user_meta( $user_id, 'funbotic_previously_associated_children' );
-	$previously_associated_children = funbotic_clean_array( $current_user_meta ); // Clean up current_user_meta.
 	$current_associated_children = $value;
 	$new_children = array();
 	$children_to_remove = array();
+
+	if ( ( empty( $current_user_meta ) || is_null( $current_user_meta ) ) ) {
+		$previously_associated_children = array();
+	} else {
+		$previously_associated_children = funbotic_clean_array( $current_user_meta ); // Clean up current_user_meta.
+	}
 
 	// If both $previously_associated_children and $current_associated_children have no data/are null.
 	if ( ( empty( $previously_associated_children ) || is_null( $previously_associated_children ) ) && ( empty( $current_associated_children ) || is_null( $current_associated_children ) ) ) {
@@ -143,7 +148,8 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 			$cleaned_array = funbotic_clean_array( $current_associated_parents );
 			$id_array = array(); // array_diff function requires 2 arrays as parameters.
 			array_push( $id_array, $user_id );
-			$new_meta = funbotic_clean_array( array_diff( $cleaned_array, $id_array ) );
+			$array_diff = array_diff( $cleaned_array, $id_array );
+			$new_meta = funbotic_clean_array( $array_diff );
 			update_user_meta( $child, 'funbotic_associated_parents', $new_meta );
 			funbotic_generate_acf_parent_textarea( $child );
 		}
@@ -160,16 +166,30 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 // This is a helper function that generates a formatted text string displaying all of the users who are registered as parents
 // of the profile whose ID is entered as a parameter.  The text string is saved in the user's funbotic_parents ACF field metadata.
 function funbotic_generate_acf_parent_textarea( $user_id_in ) {
-	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents', false );
+	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents' );
 
 	$textarea_string = '';
 
-	foreach ( $parent_IDs as $parent ) {
-		$last_name = get_user_meta( $parent, 'last_name' );
-		$first_name = get_user_meta( $parent, 'first_name' );
+	if ( ( ! empty( $parent_IDs ) || ! is_null( $parent_IDs ) ) ) {
+		$list_started = false;
 
-		$textarea_string .= $last_name . ', ' . $first_name;
+		foreach ( $parent_IDs as $parent ) {
+			$parent_info = get_userdata( $parent );
+			$nicename = $parent_info->user_nicename;
+			// $last_name = get_user_meta( $parent, 'last_name' );
+			// $first_name = get_user_meta( $parent, 'first_name' );
+
+			if ( $list_started ) {
+				$textarea_string .= ', ' . $nicename;
+			} else {
+				$textarea_string .= $nicename;
+			}
+			
+			$list_started = true;
+		}
 	}
+
+	$textarea_string .= ' At least I got here.';
 
 	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
