@@ -166,7 +166,7 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 // This is a helper function that generates a formatted text string displaying all of the users who are registered as parents
 // of the profile whose ID is entered as a parameter.  The text string is saved in the user's funbotic_parents ACF field metadata.
 function funbotic_generate_acf_parent_textarea( $user_id_in ) {
-	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents' );
+	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents', false );
 
 	$textarea_string = '';
 
@@ -179,17 +179,18 @@ function funbotic_generate_acf_parent_textarea( $user_id_in ) {
 			// $last_name = get_user_meta( $parent, 'last_name' );
 			// $first_name = get_user_meta( $parent, 'first_name' );
 
-			if ( $list_started ) {
-				$textarea_string .= ', ' . $nicename;
+			if ( $list_started === true ) {
+				$textarea_string .= ' | ' . $parent_info;
 			} else {
-				$textarea_string .= $nicename;
+				$textarea_string .= $parent_info;
 			}
 			
 			$list_started = true;
 		}
 	}
 
-	$textarea_string .= ' At least I got here.';
+	// TEST
+	$textarea_string .= '| At least I got here.';
 
 	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
