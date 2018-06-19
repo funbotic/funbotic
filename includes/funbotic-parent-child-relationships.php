@@ -115,6 +115,12 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 
 	}
 
+
+	// TEST
+	update_user_meta( $user_id, 'funbotic_test_new_children', $new_children );
+	update_user_meta( $user_id, 'funbotic_test_children_to_remove', $children_to_remove );
+
+
 	// NOTE: funbotic_associated_parents only exists as a custom user_meta field.  It does not and should not exist as an ACF field.
 	// funbotic_associated_parents should merely be an internal listing of the IDs of all users who have a parent relationship to a given camper's user profile.
 
@@ -168,29 +174,20 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 function funbotic_generate_acf_parent_textarea( $user_id_in ) {
 	$parent_IDs = get_user_meta( $user_id_in, 'funbotic_associated_parents', false );
 
-	$textarea_string = '';
+	$textarea_string = '$parent_IDs: ' . $parent_IDs . ' | ';
 
 	if ( ( ! empty( $parent_IDs ) || ! is_null( $parent_IDs ) ) ) {
-		$list_started = false;
 
 		foreach ( $parent_IDs as $parent ) {
-			$parent_info = get_userdata( $parent );
-			$nicename = $parent_info->user_nicename;
-			// $last_name = get_user_meta( $parent, 'last_name' );
-			// $first_name = get_user_meta( $parent, 'first_name' );
+			$last_name = get_user_meta( $parent, 'last_name' );
+			$first_name = get_user_meta( $parent, 'first_name' );
 
-			if ( $list_started === true ) {
-				$textarea_string .= ' | ' . $parent_info;
-			} else {
-				$textarea_string .= $parent_info;
-			}
-			
-			$list_started = true;
+			$textarea_string .= $last_name . ', ' . $first_name . '\n';
 		}
 	}
 
 	// TEST
-	$textarea_string .= '| At least I got here.';
+	$textarea_string .= 'At least I got here.';
 
 	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
