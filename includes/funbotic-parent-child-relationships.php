@@ -33,6 +33,13 @@ function funbotic_save_profile_ID( $profileuser ) {
 // A camper's parents will be displayed as an uneditable text field.  Any parent/child relationships should
 // only be established when editing the parent's profile.
 function funbotic_load_parents( $field ) {
+	/* 
+	 * This line supposed to make the field read only, though this is not currently working for an unknown reason.  Current attempted fixes:
+	 * Disabling all plugins but ACF and this plugin.
+	 * Reverting to 2017 theme.
+	 * Testing out just this plugin and ACF on a clean site.
+	 * See: https://support.advancedcustomfields.com/forums/topic/set-textarea-to-uneditable/#post-60729
+	 */
 	$field['readonly'] = 1;
 	return $field;
 }
@@ -82,19 +89,23 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 	// to be loaded, so they can be compared with array_diff.
 	$user_id = (int) get_field( 'profile_user_id' );
 	$current_user_meta = get_user_meta( $user_id, 'funbotic_previously_associated_children' );
-	$current_associated_children = $value;
-	$new_children = array();
-	$children_to_remove = array();
-
+	
 	if ( ( empty( $current_user_meta ) || is_null( $current_user_meta ) ) ) {
 		$previously_associated_children = array();
 	} else {
 		$previously_associated_children = funbotic_clean_array( $current_user_meta ); // Clean up current_user_meta.
 	}
 
+	if ( ( empty( $value ) || is_null( $value ) ) ) {
+		$current_associated_children = array();
+	} else {
+		$current_associated_children = funbotic_clean_array( $value ); // Clean up value.
+	}
+
+	/*
 	// If both $previously_associated_children and $current_associated_children have no data/are null.
 	if ( ( empty( $previously_associated_children ) || is_null( $previously_associated_children ) ) && ( empty( $current_associated_children ) || is_null( $current_associated_children ) ) ) {
-		
+		;
 		return $value; // Nothing needs to happen and this function can return.
 
 	// If only $previously_associated_children is null.
@@ -114,9 +125,20 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 		$children_to_remove = funbotic_clean_array( array_diff( $previously_associated_children, $current_associated_children ) );
 
 	}
+	*/
+
+	
+	$temp_new = array_diff( $current_associated_children, $previously_associated_children );
+	$new_children = funbotic_clean_array( $temp_new );
+
+	$temp_remove = array_diff( $previously_associated_children, $current_associated_children );
+	$children_to_remove = funbotic_clean_array( $temp_remove );
 
 
 	// TEST
+	update_user_meta( $user_id, 'funbotic_test_previously_associated_children', $previously_associated_children );
+	update_user_meta( $user_id, 'funbotic_test_current_associated_children', $current_associated_children );
+	update_user_meta( $user_id, 'funbotic_test_value', $value );
 	update_user_meta( $user_id, 'funbotic_test_new_children', $new_children );
 	update_user_meta( $user_id, 'funbotic_test_children_to_remove', $children_to_remove );
 
@@ -140,7 +162,21 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 		} else {
 			array_push( $current_associated_parents, $user_id );
 			update_user_meta( $new_child, 'funbotic_associated_parents', $current_associated_parents );
-			funbotic_generate_acf_parent_textarea( $new_child );
+			//funbotic_generate_acf_parent_textarea( $new_child );
+
+			$textarea_string = '';
+
+			if ( ( ! empty( $current_associated_parents ) || ! is_null( $current_associated_parents ) ) ) {
+
+				foreach ( $current_associated_parents as $parent ) {
+					$last_name = get_user_meta( $parent, 'last_name' );
+					$first_name = get_user_meta( $parent, 'first_name' );
+
+					$textarea_string .= $last_name . ', ' . $first_name . '\n';
+				}
+			}
+
+			update_user_meta( $new_child, 'funbotic_parents', $textarea_string );
 		} // End if/else.
 	}
 
@@ -149,7 +185,8 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 		$current_associated_parents = get_user_meta( $child, 'funbotic_associated_parents' );
 		if ( empty( $current_associated_parents ) || is_null( $current_associated_parents ) ) {
 			// Nothing else needs to be done besides regenerate the textarea.
-			funbotic_generate_acf_parent_textarea( $child );
+			//funbotic_generate_acf_parent_textarea( $child );
+			update_user_meta( $child, 'funbotic_parents', '' );
 		} else {
 			$cleaned_array = funbotic_clean_array( $current_associated_parents );
 			$id_array = array(); // array_diff function requires 2 arrays as parameters.
@@ -157,7 +194,21 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 			$array_diff = array_diff( $cleaned_array, $id_array );
 			$new_meta = funbotic_clean_array( $array_diff );
 			update_user_meta( $child, 'funbotic_associated_parents', $new_meta );
-			funbotic_generate_acf_parent_textarea( $child );
+			//funbotic_generate_acf_parent_textarea( $child );
+
+			$textarea_string = '';
+
+			if ( ( ! empty( $new_meta ) || ! is_null( $new_meta ) ) ) {
+
+				foreach ( $new_meta as $parent ) {
+					$last_name = get_user_meta( $parent, 'last_name' );
+					$first_name = get_user_meta( $parent, 'first_name' );
+
+					$textarea_string .= $last_name . ', ' . $first_name . '\n';
+				}
+			}
+
+			update_user_meta( $child, 'funbotic_parents', $textarea_string );
 		}
 	}
 
