@@ -90,6 +90,11 @@ require_once dirname( __FILE__ ) . '/includes/funbotic-dynamic-user-gallery.php'
 require_once dirname( __FILE__ ) . '/includes/funbotic-redirect.php';
 
 /**
+ * Registers all necessary ACF fields.
+ */
+require_once dirname( __FILE__ ) . '/includes/funbotic-register-acf-fields.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,

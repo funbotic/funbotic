@@ -190,6 +190,11 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
+## 1.1.3
+- All ACF fields are now registered via PHP.  Make sure any fields registered through the site UI are deleted!
+- Added a checkbox allowing for Administrators to toggle whether or not a camper is currently attending camp.  
+  This determines whether or not their name will appear when tagging photos.
+
 ## 1.1.2
 - Logging in from /wp-admin now redirects the user to the Profile page, for a more seamless experience.
 

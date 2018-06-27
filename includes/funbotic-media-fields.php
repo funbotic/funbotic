@@ -83,6 +83,8 @@ function funbotic_load_campers_in_media( $field ) {
 		'role' 		=> 'subscriber',
 		'orderby' 	=> 'display_name',
 		'order'		=> 'ASC',
+		'meta_key'	=> 'funbotic_camper_current_session_status',
+		'meta_value'=> 1,
 	);
 
 	$camper_data_array = get_users( $args );
@@ -91,16 +93,11 @@ function funbotic_load_campers_in_media( $field ) {
 	$field['choices'] = array();
 
 	foreach ( $camper_data_array as $camper ) {
+
 		$camper_ID = $camper->ID;
 		$camper_display_name = $camper->display_name;
 		$field['choices'][$camper_ID] = $camper_display_name;
 	}
-	/*
-	// Dump variable for debugging.
-	echo '<pre>';
-		var_dump( $field );
-	echo '</pre>';
-	*/
 
 	$id = get_the_ID();
 	// This appears to be the only way to properly get the values from the field, as
@@ -152,14 +149,6 @@ function funbotic_update_value_campers_in_media( $value, $field, $post_id ) {
 		$campers_to_remove = funbotic_clean_array( array_diff( $previously_associated_campers, $current_associated_campers ) );
 
 	}
-	
-	/*
-	// Test
-	update_post_meta( 4406, 'test_previous_campers', $previously_associated_campers );
-	update_post_meta( 4406, 'test_current_campers', $current_associated_campers );
-	update_post_meta( 4406, 'test_new_campers', $new_campers );
-	update_post_meta( 4406, 'test_campers_to_remove', $campers_to_remove );
-	*/
 
 	// Process each new camper.  Add the ID of this image to their user_meta.
 	foreach( $new_campers as $new_camper ) {
