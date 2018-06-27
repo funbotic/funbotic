@@ -36,7 +36,7 @@ function funbotic_add_group_leader_media_permissions() {
 	} else {
 		$role = get_role( 'group_leader' );
 		$role->add_cap( 'upload_files' );
-		$role->add_cap( 'edit_post' );
+		$role->add_cap( 'edit_posts' );
 		$role->add_cap( 'edit_published_posts' );
 		$role->add_cap( 'delete_posts' );
 		$role->add_cap( 'edit_others_posts' );
