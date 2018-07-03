@@ -12,6 +12,7 @@
 
 /**
  * Create custom fields when uploading/editing media, to allow a piece of media to be associated with an individual camper.
+ * Registers bulk action to tag multiple camper's status in regards to attendance of current camp session.
  */
 
 // Add capability to upload and edit media files to the Group Leader role, as this will be necessary for
@@ -25,6 +26,13 @@ add_filter( 'acf/location/rule_match/ef_media', 'acf_location_rule_match_ef_medi
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
 add_filter( 'acf/update_value/name=campers_in_media', 'funbotic_update_value_campers_in_media', 10, 3 );
+
+// Bulk action filters.
+add_filter( 'bulk_actions-users', 'funbotic_register_bulk_action_enable_camper_current_session_status' );
+add_filter( 'bulk_actions-users', 'funbotic_register_bulk_action_disable_camper_current_session_status' );
+add_filter( 'handle_bulk_actions-users', 'funbotic_users_bulk_action_handler', 10, 3 );
+// Action for notice after using bulk action for users.
+add_action( 'admin_notices', 'funbotic_bulk_action_alter_camper_current_session_status' );
 
 
 function funbotic_add_group_leader_media_permissions() {
@@ -181,6 +189,80 @@ function funbotic_update_value_campers_in_media( $value, $field, $post_id ) {
 	update_post_meta( $id, 'funbotic_previously_associated_campers', $current_associated_campers );
 
 	return $value;
+}
+
+
+// Registering the "Enable Current Camp Activity Status" bulk action.
+function funbotic_register_bulk_action_enable_camper_current_session_status( $bulk_actions ) {
+	$bulk_actions['enable_camper_current_session_status'] = __( 'Enable Current Camp Activity Status', 'enable_camper_current_session_status' );
+	return $bulk_actions;
+}
+
+
+// Registering the "Disable Current Camp Activity Status" bulk action.
+function funbotic_register_bulk_action_disable_camper_current_session_status( $bulk_actions ) {
+	$bulk_actions['disable_camper_current_session_status'] = __( 'Disable Current Camp Activity Status', 'disable_camper_current_session_status' );
+	return $bulk_actions;
+}
+
+
+// Bulk action handler for all actions occuring on the 'users' admin edit page.
+function funbotic_users_bulk_action_handler( $redirect_to, $doaction, $post_ids ) {
+	if ( $doaction === 'enable_camper_current_session_status' ) {
+
+		foreach ( $post_ids as $post_id ) {
+		
+			$user_meta = get_userdata( $post_id );
+			$user_roles = $user_meta->roles;
+
+			if ( in_array( 'subscriber', $user_roles ) ) {
+				update_user_meta( $post_id, 'funbotic_camper_current_session_status', 1 );
+			}	
+			
+		}
+		$redirect_to = add_query_arg( 'bulk_enabled_camper_current_session_status', count( $post_ids ), $redirect_to );
+		return $redirect_to;
+
+	} elseif ( $doaction === 'disable_camper_current_session_status' ) {
+
+		foreach ( $post_ids as $post_id ) {
+
+			$user_meta = get_userdata( $post_id );
+			$user_roles = $user_meta->roles;
+
+			if ( in_array( 'subscriber', $user_roles ) ) {
+				update_user_meta( $post_id, 'funbotic_camper_current_session_status', 0 );
+			}
+
+		}
+		$redirect_to = add_query_arg( 'bulk_disabled_camper_current_session_status', count( $post_ids ), $redirect_to );
+		return $redirect_to;
+
+	} else {
+
+		return $redirect_to;
+
+	}
+}
+
+
+// Display notices after bulk actions for enabling or disabling camper current session status.
+function funbotic_bulk_action_alter_camper_current_session_status() {
+	if ( ! empty( $_REQUEST['bulk_enabled_camper_current_session_status'] ) ) {
+
+		$enabled_count = intval( $_REQUEST['bulk_enabled_camper_current_session_status'] );
+
+		printf( '<div id="message" class="updated fade">' . _n( 'Enabled %s camper\'s current session status.',  'Enabled %s campers\' current session status.',
+		$enabled_count, 'enable_camper_current_session_status' ) . '</div>', $enabled_count );
+
+	} elseif ( ! empty( $_REQUEST['bulk_disabled_camper_current_session_status'] ) ) {
+
+		$disabled_count = intval( $_REQUEST['bulk_disabled_camper_current_session_status'] );
+
+		printf( '<div id="message" class="updated fade">' . _n( 'Disabled %s camper\'s current session status.',  'Disabled %s campers\' current session status.',
+		$disabled_count, 'disable_camper_current_session_status' ) . '</div>', $disabled_count );
+
+	}
 }
 
 
