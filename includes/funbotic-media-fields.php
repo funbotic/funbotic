@@ -34,6 +34,9 @@ add_filter( 'handle_bulk_actions-users', 'funbotic_users_bulk_action_handler', 1
 // Action for notice after using bulk action for users.
 add_action( 'admin_notices', 'funbotic_bulk_action_alter_camper_current_session_status' );
 
+// Filters to display current camper enrollment status on the edit users admin screen/table.
+add_filter( 'manage_users_columns', 'funbotic_user_table_camper_current_session_status' );
+add_filter( 'manage_users_custom_column', 'funbotic_modify_user_table_media_fields', 10, 3 );
 
 function funbotic_add_group_leader_media_permissions() {
 	// Use of static variable to ensure function only runs once.
@@ -263,6 +266,35 @@ function funbotic_bulk_action_alter_camper_current_session_status() {
 		$disabled_count, 'disable_camper_current_session_status' ) . '</div>', $disabled_count );
 
 	}
+}
+
+
+// Function to create column for camper current session status.
+function funbotic_user_table_camper_current_session_status( $column ) {
+	$column['current_session_status'] = 'Currently At Camp?';
+    return $column;
+}
+
+
+// Function to add all data to admin user table row, that should be displayed from this file (funbotic-media-fields.php)
+function funbotic_modify_user_table_media_fields( $val, $column_name, $user_id ) {
+	switch ( $column_name ) {
+
+		case 'current_session_status' :
+			$user_meta = get_the_author_meta( 'funbotic_camper_current_session_status', $user_id );
+
+			if ( $user_meta === '1' ) {
+				return 'Yes';
+				break;
+			} else {
+				return 'No' ;
+				break;
+			}
+
+		default:
+			break;
+    }
+    return $val;
 }
 
 
