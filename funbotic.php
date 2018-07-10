@@ -95,6 +95,11 @@ require_once dirname( __FILE__ ) . '/includes/funbotic-redirect.php';
 require_once dirname( __FILE__ ) . '/includes/funbotic-register-acf-fields.php';
 
 /**
+ * Creates relationships between user accounts to denote parent/child relationships, giving the ability for parents to monitor their children's progress.
+ */
+require_once dirname( __FILE__ ) . '/includes/funbotic-parent-child-relationships.php';
+
+/**
  * Begins execution of the plugin.
  *
  * Since everything within the plugin is registered via hooks,
