@@ -16,7 +16,7 @@
  * Plugin Name:       Funbotic
  * Plugin URI:        https://www.funbotic.com
  * Description:       Logged in/logged out menu.  Conditional shortcodes.  Custom fields.
- * Version:           1.0.0
+ * Version:           1.1.3
  * Author:            Alexander LaBrie
  * Author URI:        https://www.funbotic.com
  * License:           GPL-2.0+
