@@ -210,12 +210,13 @@ function funbotic_generate_acf_parent_textarea( $user_id_in ) {
 			$last_name = get_the_author_meta( 'last_name', $parent );
 			$first_name = get_the_author_meta( 'first_name', $parent );
 
-			$textarea_string .= $last_name . ', ' . $first_name . '\n';
+			$textarea_string .= $last_name . ', ' . $first_name . '
+'; // This line NEEDS to be formatted this way in order for ACF to register a line break properly.  Yeah, it's annoying and looks ugly.  But it works.
 		}
 	}
 
 	// TEST
-	$textarea_string .= ' |GOT TO END OF funbotic_generate_acf_parent_textarea|';
+	$textarea_string .= '|GOT TO END OF funbotic_generate_acf_parent_textarea|';
 
 	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
