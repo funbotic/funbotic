@@ -65,15 +65,12 @@ function funbotic_parent_display_init() {
         } else {
 
             $content = '';
-            $counter = 1;
 
             foreach ( $current_children as $child ) {
 
                 $child_name = get_the_author_meta( 'display_name', $child );
 
-                $content .= '<div><h5>Begin Child ' . $counter . '</h5></div>';
-
-                $content .= '<div><h3>' . $child_name . '</h3></div></br></br>';
+                $content .= '<div><h3>' . $child_name . '</h3></div></br>';
 
                 $current_meta = get_the_author_meta( 'funbotic_associated_images', $child );
                 // Just to be safe, we will clean the array to ensure it is in a single dimension.
@@ -97,9 +94,6 @@ function funbotic_parent_display_init() {
 
                     $content = rtrim($content, ',');
                     $content .= '"]</span></div></br>';
-
-                    $content .= '<div><h5>End Child ' . $counter . '</h5></div>';
-                    $counter++;
                 } // End if/else check for associated images.
 
             } // End foreach ( $current_children as $child ).
