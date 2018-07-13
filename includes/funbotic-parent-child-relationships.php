@@ -104,33 +104,6 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 		$current_associated_children = funbotic_clean_array( $value ); // Clean up value.
 	}
 
-
-	/*
-	// If both $previously_associated_children and $current_associated_children have no data/are null.
-	if ( ( empty( $previously_associated_children ) || is_null( $previously_associated_children ) ) && ( empty( $current_associated_children ) || is_null( $current_associated_children ) ) ) {
-		;
-		return $value; // Nothing needs to happen and this function can return.
-
-	// If only $previously_associated_children is null.
-	} elseif ( empty( $previously_associated_children ) || is_null( $previously_associated_children ) ) {
-		
-		$new_children = funbotic_clean_array( $current_associated_children ); // Then all the currently associated children are new.
-
-	// If only $current_associated_children is null.
-	} elseif ( empty( $current_associated_children ) || is_null( $current_associated_children ) ) {
-
-		$children_to_remove = funbotic_clean_array( $previously_associated_children ); // Then all previously associated children need to be removed.
-
-	// If both arrays have values in them.
-	} else {
-
-		$new_children = funbotic_clean_array( array_diff( $current_associated_children, $previously_associated_children ) );
-		$children_to_remove = funbotic_clean_array( array_diff( $previously_associated_children, $current_associated_children ) );
-
-	}
-	*/
-
-
 	$temp_new = array_diff( $current_associated_children, $previously_associated_children );
 	$new_children = funbotic_clean_array( $temp_new );
 
@@ -139,12 +112,14 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 
 
 	// TEST
+	/*
 	update_user_meta( $user_id, 'funbotic_test_previously_associated_children', $previously_associated_children );
 	update_user_meta( $user_id, 'funbotic_test_current_associated_children', $current_associated_children );
 	update_user_meta( $user_id, 'funbotic_test_value', $value );
 	update_user_meta( $user_id, 'funbotic_test_new_children', $new_children );
 	update_user_meta( $user_id, 'funbotic_test_children_to_remove', $children_to_remove );
 	update_user_meta( $user_id, 'funbotic_test_user_id', $user_id );
+	*/
 
 
 	// NOTE: funbotic_associated_parents only exists as a custom user_meta field.  It does not and should not exist as an ACF field.
@@ -182,8 +157,15 @@ function funbotic_update_value_funbotic_children( $value, $field, $post_id ) {
 			$cleaned_array = funbotic_clean_array( $current_associated_parents );
 			$id_array = array(); // array_diff function requires 2 arrays as parameters.
 			array_push( $id_array, $user_id );
-			$array_diff = array_diff( $cleaned_array, $id_array );
+			$array_diff = array_diff( $id_array, $cleaned_array );
 			$new_meta = funbotic_clean_array( $array_diff );
+			// TEST
+			/*
+			update_user_meta( $child, 'funbotic_test_id_array', $id_array );
+			update_user_meta( $child, 'funbotic_test_array_diff', $array_diff );
+			update_user_meta( $child, 'funbotic_test_new_meta', $new_meta );
+			*/
+
 			update_user_meta( $child, 'funbotic_associated_parents', $new_meta );
 			funbotic_generate_acf_parent_textarea( $child );
 		}
@@ -216,7 +198,7 @@ function funbotic_generate_acf_parent_textarea( $user_id_in ) {
 	}
 
 	// TEST
-	$textarea_string .= '|GOT TO END OF funbotic_generate_acf_parent_textarea|';
+	// $textarea_string .= '|GOT TO END OF funbotic_generate_acf_parent_textarea|';
 
 	update_user_meta( $user_id_in, 'funbotic_parents', $textarea_string );
 }
