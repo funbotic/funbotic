@@ -133,12 +133,6 @@ function normalize_empty_atts( $atts ) {
 }
 
 
-// Conditional evaluator to determine if the user is logged in.
-// Parameter to use in shortcode is: is_logged_in
-function is_logged_in() {
-	return is_user_logged_in();
-}
-
 // Conditional evaluator to determine if the user has the role of Subscriber from LearnDash.
 // Parameter to use in shortcode is: is_user_role_subscriber
 function is_user_role_subscriber() {
@@ -184,7 +178,6 @@ function is_user_role_administrator() {
 }
 
 // Add all filters for conditional evalulators.
-add_filter( $if_shortcode_filter_prefix . 'is_logged_in', 'is_logged_in' );
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_subscriber', 'is_user_role_subscriber' );
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_group_leader', 'is_user_role_group_leader' );
 add_filter( $if_shortcode_filter_prefix . 'is_user_role_customer', 'is_user_role_customer' );
