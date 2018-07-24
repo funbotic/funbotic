@@ -190,6 +190,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
+## 1.1.4
+- Parent/child relationships are fully implemented.  Parent accounts will be able to see the images of all child accounts by utilizing the [funbotic_parent_display]    shortcode on their profile page.  There are issues with setting the readonly status of the textarea on child accounts, which displays the parents currently 		    associated with that child user, but even if this is altered it does not affect the backend functionality.
+
 ## 1.1.3
 - All ACF fields are now registered via PHP.  Make sure any fields registered through the site UI are deleted!
 - Added a checkbox allowing for Administrators to toggle whether or not a camper is currently attending camp.  

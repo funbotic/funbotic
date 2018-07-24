@@ -3,7 +3,7 @@
  * Fired during plugin activation
  *
  * @link       https://www.funbotic.com
- * @since      1.1.1
+ * @since      1.1.4
  *
  * @package    Funbotic
  * @subpackage Funbotic/includes

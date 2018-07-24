@@ -65,7 +65,8 @@ function acf_location_rule_values_ef_media ( $choices ) {
 
 // Apparently this is impossible?
 // https://support.advancedcustomfields.com/forums/topic/custom-location-rules-for-attachment-modals/
-// Seriously what the fuck ACF.
+// This was an attempt to make it so that the option to tag campers in images would only be available for an actual image, and not any other type of media.
+/*
 function acf_location_rule_match_ef_media ( $match, $rule, $options ) {
 	$id = get_the_ID();
 	
@@ -86,6 +87,7 @@ function acf_location_rule_match_ef_media ( $match, $rule, $options ) {
 
 	return $match;
 }
+*/
 
 
 function funbotic_load_campers_in_media( $field ) {
