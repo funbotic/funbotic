@@ -21,7 +21,7 @@ add_action( 'init', 'funbotic_add_group_leader_media_permissions');
 // Filter to add custom rule to value to allow a field to only show up when the attachment to a post is an image.
 add_filter( 'acf/location/rule_values/ef_media', 'acf_location_rule_values_ef_media' );
 // Rule match for funbotic_acf_rule_values_attachment_image.
-add_filter( 'acf/location/rule_match/ef_media', 'acf_location_rule_match_ef_media', 10, 3 );
+// add_filter( 'acf/location/rule_match/ef_media', 'acf_location_rule_match_ef_media', 10, 3 );
 // Advanced Custom Fields load field filter, to allow for spontaneous generation of camper names.
 add_filter( 'acf/load_field/name=campers_in_media', 'funbotic_load_campers_in_media' );
 // Filter before values are saved in database.
