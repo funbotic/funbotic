@@ -7,19 +7,27 @@ Tags: proprietary
 
 Requires at least: 4.0.1
 
-Tested up to: 4.9.5
+Tested up to: 4.9.7
 
-Stable tag: 4.9.5
+Stable tag: 4.9.7
 
 License: GPLv2 or later
 
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
+# Dependencies
+The following Wordpress plugins are required for the Funbotic plugin to operate properly:
+- Advanced Custom Fields
+- LearnDash LMS
+
 # Description
 This is a custom plugin for WordPress, providing a variety of features for the Funbotic website.
 
 Current features:
+- Photo Tagging
 - Dynamic User Gallery
+- Parent-Child Relationships
+- Parent Display
 - Logged In/Logged Out Menu Change
 - Conditional Shortcodes
 
@@ -32,7 +40,10 @@ Displays any images associated with a given user with the Subscriber role to tha
 
 In order to associate an image with a Subscriber, open that image in the WordPress Media Library.  Beneath the image you should see checkboxes of all users with the Subscriber role.  Check whichever users are present in the image, and it will show up as part of the dynamic user gallery, whenever the shortcode is used.
 
-This feature requires the use of Advanced Custom Fields, within which there must be a checkbox field with the Field Name "campers-in-media" (without quotes).  Ensure the field has a good description, but is NOT set as a required field.  Currently, for the Field Group rules, select "Show this field group if Attachment is equal to All".  Checkboxes only show up for posts that have an image as an attachment.
+## Parent/Child Relationships
+All users with a Customer role may be assigned children from the pool of users with the Subscriber role.  This can be done from the Customer's Edit Profile page, and works in the same way as tagging photos.  Simply check the checkboxes of any children you wish to be associated with the Customer.  The following shortcode will display all of the images for each child associated with that parent:
+
+	[funbotic_parent_display]
 
 ## Logged In/Logged Out Menu Change
 All credit to: http://www.wpbeginner.com/wp-themes/how-to-show-different-menus-to-logged-in-users-in-wordpress/
