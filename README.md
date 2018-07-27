@@ -19,6 +19,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 The following Wordpress plugins are required for the Funbotic plugin to operate properly:
 - Advanced Custom Fields
 - LearnDash LMS
+- WooCommerce
 
 # Description
 This is a custom plugin for WordPress, providing a variety of features for the Funbotic website.
