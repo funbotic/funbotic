@@ -42,7 +42,7 @@ Displays any images associated with a given user with the Subscriber role to tha
 In order to associate an image with a Subscriber, open that image in the WordPress Media Library.  Beneath the image you should see checkboxes of all users with the Subscriber role.  Check whichever users are present in the image, and it will show up as part of the dynamic user gallery, whenever the shortcode is used.
 
 ## Parent/Child Relationships
-All users with a Customer role may be assigned children from the pool of users with the Subscriber role.  This can be done from the Customer's Edit Profile page, and works in the same way as tagging photos.  Simply check the checkboxes of any children you wish to be associated with the Customer.  The following shortcode will display all of the images for each child associated with that parent:
+All users with a Customer role may be assigned children from the pool of users with the Subscriber role.  This can be done from the Customer's Edit Profile page, and works in the same way as tagging photos.  Simply check the checkboxes of any children you wish to be associated with the Customer.  The following shortcode will display the LearnDash profile, as well as all of the images for each child associated with that parent:
 
 	[funbotic_parent_display]
 
@@ -201,6 +201,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 2. This is the second screen shot
 
 # Changelog
+
+## 1.1.5
+- The [funbotic_parent_display] shortcode now displays the [ld_profile] for each child.
 
 ## 1.1.4
 - Parent/child relationships are fully implemented.  Parent accounts will be able to see the images of all child accounts by utilizing the [funbotic_parent_display]    shortcode on their profile page.  There are issues with setting the readonly status of the textarea on child accounts, which displays the parents currently 		    associated with that child user, but even if this is altered it does not affect the backend functionality.

@@ -53,7 +53,8 @@ function funbotic_user_gallery_init() {
 
 
 /**
- * Code copied from LearnDash's ld-course-info-widget.php, now attempting to modify to display user of choice with added parameter.
+ * Code copied from LearnDash's ld-course-info-widget.php, utilized to generate content that would normally show in the
+ * [ld_profile] shortcode, but for whichever user's id is in the $user_to_get parameter.
  * 
  * @since 1.1.5
  * 
@@ -63,8 +64,15 @@ function funbotic_user_gallery_init() {
 function funbotic_learndash_profile( $atts, $user_to_get ) {
 	global $learndash_shortcode_used;
 	
+	// Add check to ensure LearnDash is active.
+	if ( ! is_plugin_active( 'sfwd-lms/sfwd_lms.php' ) ) {
+		return '';
+	}
+
 	// Add check to ensure user is logged in.
-	if ( !is_user_logged_in() ) return '';
+	if ( ! is_user_logged_in() ) {
+		return '';
+	}
 	
 	$defaults = array(
 		'user_id'				=>	$user_to_get,
@@ -76,10 +84,11 @@ function funbotic_learndash_profile( $atts, $user_to_get ) {
 	);
 	$atts = wp_parse_args( $atts, $defaults );
 
-	if ( ( strtolower($atts['expand_all'] ) == 'yes' ) || ( $atts['expand_all'] == 'true' ) || ( $atts['expand_all'] == '1' ))
+	if ( ( strtolower($atts['expand_all'] ) == 'yes' ) || ( $atts['expand_all'] == 'true' ) || ( $atts['expand_all'] == '1' )) {
 		$atts['expand_all'] = true;
-	else
+	} else {
 		$atts['expand_all'] = false;
+	}
 
 	if ( $atts['per_page'] === false ) {
 		$atts['per_page'] = $atts['quiz_num'] = LearnDash_Settings_Section::get_section_setting( 'LearnDash_Settings_Section_General_Per_Page', 'per_page' );
@@ -160,6 +169,12 @@ function funbotic_learndash_profile( $atts, $user_to_get ) {
 }
 
 
+/*
+ * This function generates the collated data for all children.  This includes: 
+ * - Name
+ * - LearnDash profile
+ * - Gallery of associated images
+ */ 
 function funbotic_parent_display_init() {
     function funbotic_generate_parent_display( $content = null ) {
         $id = get_current_user_id();
@@ -176,9 +191,20 @@ function funbotic_parent_display_init() {
 
             foreach ( $current_children as $child ) {
 
-                $child_name = get_the_author_meta( 'display_name', $child );
+				$child_name = get_the_author_meta( 'display_name', $child );
+				
+				if ( $child_name == '' && ( get_the_author_meta( 'nickname', $child ) != '' ) ) {
+					$child_name = get_the_author_meta( 'nickname', $child );
+				} else {
+					$child_name = get_the_author_meta( 'user_login', $child );
+				}
 
-                $content .= '<div><h3>' . $child_name . '</h3></div></br>';
+				$content .= '<div><h3>' . $child_name . '</h3></div></br>';
+
+				// Only generate data for [ld_profile] if LearnDash is active on the current installation of Wordpress.
+				if ( is_plugin_active( 'sfwd-lms/sfwd_lms.php' ) ) {
+					$content .= funbotic_learndash_profile( $atts, $child );
+				}
 
                 $current_meta = get_the_author_meta( 'funbotic_associated_images', $child );
                 // Just to be safe, we will clean the array to ensure it is in a single dimension.
