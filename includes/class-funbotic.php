@@ -166,6 +166,10 @@ class Funbotic {
 		// Add Settings link to the plugin
 		$plugin_basename = plugin_basename( plugin_dir_path( __DIR__ ) . $this->plugin_name . '.php' );
 		$this->loader->add_filter( 'plugin_action_links_' . $plugin_basename, $plugin_admin, 'add_action_links' );
+
+		//Admin Customizations
+        $this->loader->add_action( 'login_enqueue_scripts', $plugin_admin, 'funbotic_login_css' );
+
 	}
 
 	/**
@@ -181,6 +185,25 @@ class Funbotic {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		/**
+         * The following actions are commented out as we won't need any added styles or scripts for our theme.
+         * $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
+         * $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+         */
+
+        // Below are our "public" frontend related actions and filters hooks.
+
+        // Cleanup - Actions and Filters
+        // Actions
+		$this->loader->add_action( 'init', $plugin_public, 'funbotic_cleanup' );
+		$this->loader->add_action( 'wp_loaded', $plugin_public, 'funbotic_remove_comments_inline_styles' );
+		$this->loader->add_action( 'wp_loaded', $plugin_public, 'funbotic_remove_gallery_styles' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'funbotic_cdn_jquery', PHP_INT_MAX );
+  
+		// Filters
+		$this->loader->add_filter( 'wp_headers', $plugin_public, 'funbotic_remove_x_pingback' );
+		$this->loader->add_filter( 'body_class', $plugin_public, 'funbotic_body_class_slug' );
 
 	}
 
