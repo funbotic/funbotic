@@ -202,6 +202,10 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 # Changelog
 
+## 1.1.6
+- Stripped out old demo code, as it does not serve the purpose of this plugin.
+- Began implementation of .csv upload feature to automate camper/parent account creation.
+
 ## 1.1.5
 - The [funbotic_parent_display] shortcode now displays the [ld_profile] for each child.
 
